@@ -1,21 +1,16 @@
 require 'logger'
 require 'socket'
+require 'rlogger/default_formatter'
+require 'rlogger/default_logger'
 
-class RFormatter < Logger::Formatter
-  def call(severity, time, progname, msg)
-    hostname = Socket.gethostname
-    "[#{time}] [Hostname: #{hostname} | Service: #{progname}] (#{severity}): #{msg}\n"
+module RLogger
+  extend self
+
+  def logger
+    RLogger::DefaultLogger.new
   end
-end
 
-class RLogger < Logger
-  def self.logger
-    logger = RLogger.new(STDOUT)
-    logger.progname = 'Ecommerce'
-    r_formatter = RFormatter.new
-    logger.formatter = proc { |severity, datetime, progname, msg|
-      r_formatter.call(severity, datetime, progname, msg.dump)
-    }
-    logger
+  def load_config
+    Config.load('')
   end
 end
