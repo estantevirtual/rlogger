@@ -1,12 +1,14 @@
-require 'rlogger/agent_noticer'
+require 'rlogger/nil_agent_noticer'
 
 module RLogger
   class AgentNoticerFactory
-    def self.build
-      if defined? ::NewRelic::Agent
+    def self.build(config)
+      if config[:agent_noticer]
+        config[:agent_noticer]
+      elsif defined? ::NewRelic::Agent
         ::NewRelic::Agent
       else
-        AgentNoticer.new
+        NilAgentNoticer.new
       end
     end
   end

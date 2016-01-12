@@ -1,5 +1,5 @@
 module RLogger
-  class AgentNoticer
+  class NilAgentNoticer
     def notice_error(exception)
     end
   end

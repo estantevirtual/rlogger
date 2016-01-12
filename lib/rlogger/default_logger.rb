@@ -8,7 +8,7 @@ module RLogger
       config[:formatter] = config[:formatter] ||= DefaultFormatter.new
       config[:service_name] = config[:service_name] ||= ""
       config[:output] = config[:output] ||= STDOUT
-      @agent_notifier = config[:agent_noticer] || AgentNoticerFactory.build
+      @agent_noticer = AgentNoticerFactory.build(config)
       @config = config
 
       super(config[:output])
@@ -29,7 +29,7 @@ module RLogger
 
           raise msg
         rescue => e
-          @agent_notifier.notice_error(e)
+          @agent_noticer.notice_error(e)
         end
       end
     end
