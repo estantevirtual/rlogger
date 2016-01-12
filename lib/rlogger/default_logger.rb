@@ -1,3 +1,5 @@
+require 'rlogger/agent_noticer_factory'
+
 module RLogger
   class DefaultLogger < Logger
     attr_reader :config
@@ -6,8 +8,7 @@ module RLogger
       config[:formatter] = config[:formatter] ||= DefaultFormatter.new
       config[:service_name] = config[:service_name] ||= ""
       config[:output] = config[:output] ||= STDOUT
-      @agent_notifier = ::NewRelic::Agent if defined? ::NewRelic::Agent
-      @agent_notifier = config[:agent_notifier] if config[:agent_notifier]
+      @agent_notifier = config[:agent_noticer] || AgentNoticerFactory.build
       @config = config
 
       super(config[:output])
@@ -18,11 +19,17 @@ module RLogger
     def error(progname = nil, &block)
       if error?
         begin
-          msg = block.call
+          msg = if block
+            block.call
+          else
+            progname
+          end
+
           super(msg)
+
           raise msg
         rescue => e
-          @agent_notifier.notice_error(e) if defined? @agent_notifier
+          @agent_notifier.notice_error(e)
         end
       end
     end
