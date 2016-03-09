@@ -6,13 +6,21 @@ module RLogger
 
     def initialize(config={})
       config[:formatter] = config[:formatter] ||= DefaultFormatter.new
-      config[:service_name] = config[:service_name] ||= ""
-      config[:output] = config[:output] ||= STDOUT
+      config[:service_name] = config[:service_name] ||= ''
+      config[:output] = config[:output] ||= create_default_output
       @agent_noticer = AgentNoticerFactory.build(config)
       @config = config
 
       super(config[:output])
       setup!
+    end
+
+    def create_default_output
+      if Rails.env.development? || Rails.env.test?
+        return STDOUT
+      end
+
+      "log/#{Rails.env}.log"
     end
 
     public
@@ -35,7 +43,6 @@ module RLogger
     end
 
     private
-
     def setup!
       self.progname = config[:service_name]
       self.formatter = proc { |severity, datetime, progname, msg|
