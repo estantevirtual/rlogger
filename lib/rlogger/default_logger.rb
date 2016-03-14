@@ -16,7 +16,7 @@ module RLogger
     end
 
     def create_default_output
-      if Rails.env.development? || Rails.env.test?
+      if is_dev_or_test?
         return STDOUT
       end
 
@@ -45,10 +45,20 @@ module RLogger
     private
     def setup!
       self.progname = config[:service_name]
+
+      set_formatter unless is_dev_or_test?
+
+      self.level = config[:level] || Logger::INFO
+    end
+
+    def is_dev_or_test?
+      Rails.env.development? || Rails.env.test?
+    end
+
+    def set_formatter
       self.formatter = proc { |severity, datetime, progname, msg|
         config[:formatter].call(severity, datetime, progname, msg.dump)
       }
-      self.level = config[:level] || Logger::INFO
     end
   end
 end
