@@ -48,6 +48,7 @@ module RLogger
       self.formatter = proc { |severity, datetime, progname, msg|
         config[:formatter].call(severity, datetime, progname, msg.dump)
       }
+      self.level = config[:level] || Logger::INFO
     end
   end
 end
