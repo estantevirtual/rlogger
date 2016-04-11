@@ -24,21 +24,29 @@ module RLogger
     end
 
     public
-    def error(progname = nil, &block)
-      if error?
-        begin
-          msg = if block
-            block.call
+    def error(progname = nil, message: nil, exception: nil, &block)
+      return unless error?
+
+      message = block.call if block
+
+      exception_msg =
+        if exception
+          if exception.respond_to?(:message) && exception.message
+            exception.message
           else
-            progname
+            exception.inspect
           end
-
-          super(msg)
-
-          raise msg
-        rescue => e
-          @agent_noticer.notice_error(e)
         end
+
+      # call super to print the msg
+      final_message = message || exception_msg || progname
+      super(final_message)
+
+      # notice error
+      if exception
+        @agent_noticer.notice_error(exception)
+      else
+        @agent_noticer.notice_error(final_message)
       end
     end
 
