@@ -16,7 +16,7 @@ module RLogger
     end
 
     def create_default_output
-      if is_dev_or_test?
+      if is_test?
         return STDOUT
       end
 
@@ -53,6 +53,10 @@ module RLogger
 
     def is_dev_or_test?
       Rails.env.development? || Rails.env.test?
+    end
+
+    def is_test?
+      Rails.env.test?
     end
 
     def set_formatter
