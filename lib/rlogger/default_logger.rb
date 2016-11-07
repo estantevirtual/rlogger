@@ -8,10 +8,12 @@ module RLogger
       config[:formatter] = config[:formatter] ||= DefaultFormatter.new
       config[:service_name] = config[:service_name] ||= ''
       config[:output] = config[:output] ||= create_default_output
+      config[:shift_age] = config[:shift_age] ||= 3
+      config[:shift_size] = config[:shift_size ||= 100 * 1024 * 1024
       @agent_noticer = AgentNoticerFactory.build(config)
       @config = config
 
-      super(config[:output])
+      super(config[:output], config[:shift_age], config[:shift_size])
       setup!
     end
 
