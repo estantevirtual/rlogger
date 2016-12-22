@@ -26,13 +26,13 @@ module RLogger
       "log/#{Rails.env}.log"
     end
 
-    public
-
-    def info(progname = nil)
+    def info(progname = nil, &block)
+      progname = block.call if block
       super(compact_long_message(progname))
     end
 
-    def debug(progname = nil)
+    def debug(progname = nil, &block)
+      progname = block.call if block
       super(compact_long_message(progname))
     end
 
