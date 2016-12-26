@@ -68,7 +68,7 @@ module RLogger
       return msg if msg_size <= msg_limit
 
       second_limit = msg_size - msg_limit
-      second_limit = msg_sizeif second_limit <= msg_limit
+      second_limit = msg_size if second_limit <= msg_limit
       "#{msg[0..msg_limit - 1]}...#{msg[second_limit..msg_size]}"
     end
 
