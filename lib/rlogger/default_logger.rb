@@ -10,7 +10,7 @@ module RLogger
       config[:output] = config[:output] ||= create_default_output
       config[:shift_age] = config[:shift_age] ||= 3
       config[:shift_size] = config[:shift_size] ||= 100 * 1024 * 1024
-      config[:message_size_limit] = config[:message_size_limit] ||= 1000
+      config[:message_size_limit] = config[:message_size_limit] ||= 2000
       @agent_noticer = AgentNoticerFactory.build(config)
       @config = config
 
