@@ -92,6 +92,7 @@ module RLogger
 
     def set_formatter
       self.formatter = proc { |severity, datetime, progname, msg|
+        msg = msg.join(", ") if msg.is_a? Enumerable
         config[:formatter].call(severity, datetime, progname, msg.dump)
       }
     end
